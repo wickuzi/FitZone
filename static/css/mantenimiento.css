@@ -1,0 +1,275 @@
+html, * {
+    font-family: 'Trebuchet MS', sans-serif;
+    box-sizing: border-box;
+  }
+
+ .logo {
+    max-width: 70px;
+    height: auto;
+  }
+
+ .navbar-brand{
+    font-size: 28px;
+ }
+
+.container-fluid{
+    border-bottom: 2px solid;
+     border-color: rgb(12, 117, 56);
+}
+h1{
+    text-align: center;
+    padding-top: 20px;
+}
+table {
+  border-collapse: collapse;
+  width: 90%;
+  max-width: 900px;
+  margin: 30px auto; 
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 15px;
+}
+
+thead {
+  background-color: rgb(12, 117, 56);
+  color: white;
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+  background-color: #e6ffe6;
+  transition: background-color 0.3s;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  gap: 15px; /* Espacio entre botones */
+  margin-top: 15px;
+  flex-wrap: wrap; /* Para que se ajusten si no caben */
+}
+.modify, .add, .save, .cancel, .save2, .cancel2, .logout {
+  width: 15%; /* Que el ancho se ajuste al contenido */
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease-out;
+}
+
+
+.modify {
+    background-color: #129b40;
+    color: #ffffff;
+    border-color: #129b40;    
+  }
+
+  .modify:hover {
+    color: #129b40;
+    background-color:  #129b4015;
+  }
+
+  .add{
+    background-color: #129b40;
+    color: #ffffff;
+    border-color: #129b40;
+  }
+    .add:hover {
+    color: #129b40;
+    background-color: #129b4015;
+  }
+
+  .save{
+    background-color: #fbfbff;
+    color: #000000;
+    border-color: rgb(0, 89, 255);
+  }
+
+    .save:hover {
+    color: rgb(0, 89, 255);
+    background-color: rgba(0, 89, 255, 0.144);
+  }
+
+  .cancel{
+    background-color: #ffffff;
+    color: #000000;
+    border-color: rgb(255, 0, 0);
+  }
+
+     .cancel:hover {
+    color: rgb(255, 0, 0);
+    background-color: #ff000017;
+  }
+.form{
+       width: 70%;
+    max-width: 680px;
+    margin: 20px auto;
+    border: 2px solid #c5c2c2;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 4px 4px 10px rgba(12, 117, 56, 0.781);
+    padding: 50px;
+    text-align: center;
+    display: block;
+}
+
+.formNuevoCliente{
+ width: 100%;
+ text-align: center;
+}
+
+input, select{
+    width: 50%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 1;
+}
+
+.save2{
+    width: 25%;
+    padding: 10px;
+    font-size: 14px;
+    background-color: #fbfbff;
+    color: #000000;
+    margin-top: 15px;
+    margin-right: 10px;
+    border-color: rgb(0, 89, 255);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease-out;
+}
+
+  .save2:hover {
+    color: rgb(0, 89, 255);
+    background-color: rgba(0, 89, 255, 0.144);
+  }
+.cancel2{
+    width: 25%;
+    padding: 10px;
+    font-size: 14px;
+    background-color: #ffffff;
+    color: #000000;
+    margin-top: 15px;
+    border-color: rgb(255, 0, 0);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease-out;
+}
+
+ .cancel2:hover {
+    color: rgb(255, 0, 0);
+    background-color: #ff000017;
+  }
+.form h3{
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.logout{
+    background-color: #129b40;
+    color: #ffffff;
+    border-color: #129b40;
+  }
+    .logout:hover {
+    color: #129b40;
+    background-color: #129b4015;
+  }
+
+  .btn-eliminar{
+    border: none;
+    transition: 0.3s ease-in;
+  }
+  .btn-eliminar:hover{
+    border-radius: 5px;
+    background-color: rgba(255, 0, 0, 0.473);
+  }
+
+  .table-container {
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 30px auto;
+  width: 90%;
+  max-width: 900px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+thead tr {
+  position: sticky;
+  top: 0;
+  background-color: rgb(12, 117, 56);
+  color: white;
+  z-index: 1;
+}
+
+/*Responsive*/
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  h1, h2, .navbar-brand {
+    font-size: 30px;
+    text-align: center;
+  }
+
+  .container-fluid {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .form {
+    flex-direction: column;
+    padding: 20px;
+    width: 95%;
+  }
+
+  input {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .select{
+    margin-bottom: 10px;
+  }
+
+  .formNuevoCliente {
+    text-align: center;
+  }
+
+  .add, .modify, .save, .cancel, .save2, .cancel2, .logout {
+    width: 100% !important;
+    margin: 10px 0 !important;
+    font-size: 14px;
+  }
+
+  table {
+    font-size: 12px;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .logo {
+    max-width: 60px;
+  }
+
+  .logout {
+    position: static;
+    margin: 10px auto;
+  }
+}

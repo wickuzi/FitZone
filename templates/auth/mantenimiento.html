@@ -1,0 +1,228 @@
+{% extends './base.html' %}
+
+{% block title %}FitZone{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mantenimiento.css')}}">
+{% endblock %}
+
+{% block body %}
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
+    {% set logout_url = url_for('logout') %}
+    <a class="navbar-brand" href='{{ logout_url }}'>
+      <img src="static/img/Imagen1.jpg" alt="Logo" class="logo">
+      FitZone
+    </a>
+    <h2 class="mode">Mantenimiento</h2>
+  </div>
+</nav>
+
+<h1>¡Bienvenido/a!</h1>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Máquina</th>
+        <th>Fecha Ingreso</th>
+        <th>Últ. Mantenimiento</th>
+        <th>Próx. Mantenimiento</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in maquinas %}
+      <tr data-id="{{ m.id }}">
+        <td>{{ m.nombre }}</td>
+        <td>{{ m.fecha_ingreso }}</td>
+        <td>{{ m.ult_mantenimiento }}</td>
+        <td>{{ m.prox_mantenimiento }}</td>
+        <td>
+          <button class="btn-eliminar" data-id="{{ m.id }}">🗑️</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div id="botonesEdicion" style="display:none; text-align:center;">
+  <button id="guardarCambios" class="save">Guardar Cambios</button>
+  <button id="cancelarCambios" class="cancel">Cancelar</button>
+</div>
+
+<div class="button-group">
+  <button onclick="activarEdicion()" class="modify">Modificar Datos</button>
+  <button onclick="toggleAgregarForm()" class="add">Agregar Máquina</button>
+ 
+</div>
+
+<div id="formAgregar" class="form" style="display:none; margin-top:20px; border:1px solid #ccc; padding:10px;">
+  <h3>Agregar Máquina</h3>
+  <form id="formNuevaMaquina" class="formNuevoCliente">
+    <input name="nombre" style="width: 100%;"placeholder="Nombre" required>
+    <input name="fecha_ingreso" style="width: 100%;"placeholder="Fecha Ingreso" required type="date">
+    <input name="ult_mantenimiento" style="width: 100%;"placeholder="Últ. Mantenimiento" required type="date">
+    <input name="prox_mantenimiento" style="width: 100%;"placeholder="Próx. Mantenimiento" required type="date">
+    <br><br>
+    <button type="submit" class="save2">Guardar</button>
+    <button type="button" id="cancelarAgregar" class="cancel2">Cancelar</button>
+  </form>
+</div>
+
+<!--JAVASCRIPT-->
+<script>
+const campos = ['nombre', 'fecha_ingreso', 'ult_mantenimiento', 'prox_mantenimiento'];
+let copiaOriginal = [];
+
+function activarEdicion() {
+  const filas = document.querySelectorAll("table tbody tr");
+  const botones = document.getElementById("botonesEdicion");
+  copiaOriginal = [];
+
+  filas.forEach(fila => {
+    const celdas = fila.querySelectorAll("td");
+    const datosOriginales = [];
+
+    campos.forEach((campo, i) => {
+      const texto = celdas[i].innerText;
+      datosOriginales.push(texto);
+
+      const esFecha = campo.includes("fecha") || campo.includes("mantenimiento");
+      const tipoInput = esFecha ? "date" : "text";
+
+      let valor = texto;
+      if (esFecha) {
+        const partes = texto.split("/");
+        if (partes.length === 3) {
+          const [dia, mes, anio] = partes;
+          valor = `${anio}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+        } else if (/^\d{2}-\d{2}-\d{4}$/.test(texto)) {
+          const [dia, mes, anio] = texto.split("-");
+          valor = `${anio}-${mes}-${dia}`;
+        }
+      }
+
+      celdas[i].innerHTML = `<input type="${tipoInput}" name="${campo}" value="${valor}" style="width:100%;">`;
+    });
+
+    copiaOriginal.push({ fila, datosOriginales });
+  });
+
+  botones.style.display = "block";
+}
+
+
+// GUARDAR CAMBIOS
+
+document.getElementById("guardarCambios").addEventListener("click", async () => {
+  const filas = document.querySelectorAll("table tbody tr");
+
+  for (const fila of filas) {
+    const id = fila.dataset.id;
+    const inputs = fila.querySelectorAll("input");
+    if (!inputs.length) continue;
+
+    const datos = {};
+    inputs.forEach(input => datos[input.name] = input.value);
+
+    const response = await fetch(`/editar_maquina/${id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos)
+    });
+
+    if (response.ok) {
+      const actualizado = await response.json();
+      const celdas = fila.querySelectorAll("td");
+      campos.forEach((campo, i) => {
+        celdas[i].innerText = actualizado[campo];
+      });
+    } else {
+      alert("Error al guardar.");
+    }
+  }
+
+  document.getElementById("botonesEdicion").style.display = "none";
+});
+
+// CANCELAR CAMBIOS
+
+document.getElementById("cancelarCambios").addEventListener("click", () => {
+  copiaOriginal.forEach(item => {
+    const { fila, datosOriginales } = item;
+    const celdas = fila.querySelectorAll("td");
+    datosOriginales.forEach((valor, i) => {
+      celdas[i].innerText = valor;
+    });
+  });
+
+  document.getElementById("botonesEdicion").style.display = "none";
+});
+
+// AGREGAR MAQUINA
+
+document.getElementById("formNuevaMaquina").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const form = e.target;
+  const datos = {
+    nombre: form.nombre.value,
+    fecha_ingreso: form.fecha_ingreso.value,
+    ult_mantenimiento: form.ult_mantenimiento.value,
+    prox_mantenimiento: form.prox_mantenimiento.value
+  };
+
+  const response = await fetch("/agregar_maquina", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(datos)
+  });
+
+  if (response.ok) {
+    const nueva = await response.json();
+    const fila = document.createElement("tr");
+    fila.setAttribute("data-id", nueva.id);
+    fila.innerHTML = `
+      <td>${nueva.nombre}</td>
+      <td>${nueva.fecha_ingreso}</td>
+      <td>${nueva.ult_mantenimiento}</td>
+      <td>${nueva.prox_mantenimiento}</td>
+      <td><button class="btn-eliminar" data-id="${nueva.id}">🗑️</button></td>
+    `;
+    document.querySelector("table tbody").appendChild(fila);
+    form.reset();
+    document.getElementById("formAgregar").style.display = "none";
+    fila.querySelector(".btn-eliminar").addEventListener("click", () => eliminarMaquina(nueva.id, fila));
+  } else {
+    alert("Error al agregar máquina.");
+  }
+});
+
+// TOGGLE AGREGAR FORM
+function toggleAgregarForm() {
+  const form = document.getElementById("formAgregar");
+  form.style.display = (form.style.display === "none" || !form.style.display) ? "block" : "none";
+}
+
+document.getElementById("cancelarAgregar").addEventListener("click", () => {
+  document.getElementById("formAgregar").style.display = "none";
+  document.getElementById("formNuevaMaquina").reset();
+});
+
+// ELIMINAR MAQUINA
+function eliminarMaquina(id, fila) {
+  if (!confirm("¿Eliminar esta máquina?")) return;
+  fetch(`/eliminar_maquina/${id}`, { method: "DELETE" })
+    .then(res => {
+      if (res.ok) fila.remove();
+      else alert("Error al eliminar.");
+    });
+}
+
+document.querySelectorAll(".btn-eliminar").forEach(btn => {
+  btn.addEventListener("click", () => eliminarMaquina(btn.dataset.id, btn.closest("tr")));
+});
+</script>
+{% endblock %}

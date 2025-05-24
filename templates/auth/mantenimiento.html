@@ -25,7 +25,7 @@
     <thead>
       <tr>
         <th>Máquina</th>
-        <th>Fecha Ingreso</th>
+        <th>Fecha de Ingreso</th>
         <th>Últ. Mantenimiento</th>
         <th>Próx. Mantenimiento</th>
         <th>Acciones</th>
@@ -113,9 +113,7 @@ function activarEdicion() {
   botones.style.display = "block";
 }
 
-
 // GUARDAR CAMBIOS
-
 document.getElementById("guardarCambios").addEventListener("click", async () => {
   const filas = document.querySelectorAll("table tbody tr");
 
@@ -125,7 +123,13 @@ document.getElementById("guardarCambios").addEventListener("click", async () => 
     if (!inputs.length) continue;
 
     const datos = {};
-    inputs.forEach(input => datos[input.name] = input.value);
+    for (let input of inputs) {
+      if (input.value.trim() === "") {
+        await Swal.fire("Campos vacíos", "No se pueden dejar campos vacíos.", "warning");
+        return;
+      }
+      datos[input.name] = input.value;
+    }
 
     const response = await fetch(`/editar_maquina/${id}`, {
       method: "POST",
@@ -140,18 +144,18 @@ document.getElementById("guardarCambios").addEventListener("click", async () => 
         celdas[i].innerText = actualizado[campo];
       });
     } else {
-      alert("Error al guardar.");
+      await Swal.fire("Error", "Error al guardar los cambios.", "error");
+      return;
     }
   }
 
   document.getElementById("botonesEdicion").style.display = "none";
+  Swal.fire("Modificado", "Los datos han sido modificados.", "success");
 });
 
 // CANCELAR CAMBIOS
-
 document.getElementById("cancelarCambios").addEventListener("click", () => {
-  copiaOriginal.forEach(item => {
-    const { fila, datosOriginales } = item;
+  copiaOriginal.forEach(({ fila, datosOriginales }) => {
     const celdas = fila.querySelectorAll("td");
     datosOriginales.forEach((valor, i) => {
       celdas[i].innerText = valor;
@@ -161,18 +165,22 @@ document.getElementById("cancelarCambios").addEventListener("click", () => {
   document.getElementById("botonesEdicion").style.display = "none";
 });
 
-// AGREGAR MAQUINA
-
+// AGREGAR MÁQUINA
 document.getElementById("formNuevaMaquina").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const form = e.target;
   const datos = {
-    nombre: form.nombre.value,
-    fecha_ingreso: form.fecha_ingreso.value,
-    ult_mantenimiento: form.ult_mantenimiento.value,
-    prox_mantenimiento: form.prox_mantenimiento.value
+    nombre: form.nombre.value.trim(),
+    fecha_ingreso: form.fecha_ingreso.value.trim(),
+    ult_mantenimiento: form.ult_mantenimiento.value.trim(),
+    prox_mantenimiento: form.prox_mantenimiento.value.trim()
   };
+
+  if (Object.values(datos).some(v => v === "")) {
+    await Swal.fire("Campos vacíos", "Todos los campos son obligatorios.", "warning");
+    return;
+  }
 
   const response = await fetch("/agregar_maquina", {
     method: "POST",
@@ -194,13 +202,17 @@ document.getElementById("formNuevaMaquina").addEventListener("submit", async (e)
     document.querySelector("table tbody").appendChild(fila);
     form.reset();
     document.getElementById("formAgregar").style.display = "none";
+
+    // Asignar evento de eliminación
     fila.querySelector(".btn-eliminar").addEventListener("click", () => eliminarMaquina(nueva.id, fila));
+
+    Swal.fire("Agregado", "Agregado exitosamente.", "success");
   } else {
-    alert("Error al agregar máquina.");
+    Swal.fire("Error", "Hubo un error al agregar la máquina.", "error");
   }
 });
 
-// TOGGLE AGREGAR FORM
+// TOGGLE FORMULARIO
 function toggleAgregarForm() {
   const form = document.getElementById("formAgregar");
   form.style.display = (form.style.display === "none" || !form.style.display) ? "block" : "none";
@@ -211,18 +223,36 @@ document.getElementById("cancelarAgregar").addEventListener("click", () => {
   document.getElementById("formNuevaMaquina").reset();
 });
 
-// ELIMINAR MAQUINA
+// ELIMINAR MÁQUINA CON CONFIRMACIÓN
 function eliminarMaquina(id, fila) {
-  if (!confirm("¿Eliminar esta máquina?")) return;
-  fetch(`/eliminar_maquina/${id}`, { method: "DELETE" })
-    .then(res => {
-      if (res.ok) fila.remove();
-      else alert("Error al eliminar.");
-    });
+  Swal.fire({
+    title: "¿Estás seguro?",
+    text: "No podrás revertir esto.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar"
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      const res = await fetch(`/eliminar_maquina/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        fila.remove();
+        Swal.fire("Eliminada", "La máquina ha sido eliminada correctamente.", "success");
+      } else {
+        Swal.fire("Error", "No se pudo eliminar la máquina.", "error");
+      }
+    }
+  });
 }
 
+// Asignar evento de eliminación inicial
 document.querySelectorAll(".btn-eliminar").forEach(btn => {
-  btn.addEventListener("click", () => eliminarMaquina(btn.dataset.id, btn.closest("tr")));
+  const id = btn.dataset.id;
+  const fila = btn.closest("tr");
+  btn.addEventListener("click", () => eliminarMaquina(id, fila));
 });
 </script>
+
 {% endblock %}

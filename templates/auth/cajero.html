@@ -30,7 +30,7 @@
         <th>Estado</th>
         <th>Método de pago</th>
         <th>Monto</th>
-        <th>Fecha Vencimiento</th>
+        <th>Fecha de Ingreso</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -86,7 +86,7 @@
       <option value="Efectivo">Efectivo</option>
       
     </select>    
-    <input name="monto" style="width: 100%;"placeholder="Monto" required type="number">
+    <input name="monto" id="inputMonto" style="width: 100%;" placeholder="Monto" required type="number" readonly>
     <input name="vencimiento" style="width: 100%;" placeholder="Fecha Vencimiento" required type="date">
 
     <br><br>
@@ -105,7 +105,6 @@ let copiaOriginal = [];
 function activarEdicion() {
   const filas = document.querySelectorAll("table tbody tr");
   const botones = document.getElementById("botonesEdicion");
-
   copiaOriginal = [];
 
   filas.forEach(fila => {
@@ -114,11 +113,9 @@ function activarEdicion() {
 
     for (let i = 0; i < campos.length; i++) {
       if (celdas[i].querySelector('input') || celdas[i].querySelector('select')) continue;
-
       const texto = celdas[i].innerText.replace("C$", "").trim();
       datosOriginales.push(texto);
 
-      // Mostrar selects para campos específicos
       if (campos[i] === "membresia") {
         celdas[i].innerHTML = `
           <select name="membresia" style="width:100%">
@@ -126,6 +123,22 @@ function activarEdicion() {
             <option value="Premium" ${texto === "Premium" ? "selected" : ""}>Premium</option>
             <option value="Ultra" ${texto === "Ultra" ? "selected" : ""}>Ultra</option>
           </select>`;
+
+        setTimeout(() => {
+          const membresiaSelect = celdas[i].querySelector("select[name='membresia']");
+          membresiaSelect.addEventListener("change", () => {
+            const fila = membresiaSelect.closest("tr");
+            const montoInput = fila.querySelector("input[name='monto']");
+            if (!montoInput) return;
+
+            let nuevoMonto = 0;
+            if (membresiaSelect.value === "Normal") nuevoMonto = 500;
+            else if (membresiaSelect.value === "Premium") nuevoMonto = 700;
+            else if (membresiaSelect.value === "Ultra") nuevoMonto = 1000;
+
+            montoInput.value = nuevoMonto;
+          });
+        }, 0);
       } else if (campos[i] === "estado") {
         celdas[i].innerHTML = `
           <select name="estado" style="width:100%">
@@ -138,6 +151,10 @@ function activarEdicion() {
             <option value="Tarjeta" ${texto === "Tarjeta" ? "selected" : ""}>Tarjeta</option>
             <option value="Efectivo" ${texto === "Efectivo" ? "selected" : ""}>Efectivo</option>
           </select>`;
+      } else if (campos[i] === "vencimiento") {
+        const dateValue = new Date(texto);
+        const formattedDate = dateValue.toISOString().split('T')[0];
+        celdas[i].innerHTML = `<input name="vencimiento" type="date" value="${formattedDate}" style="width:100%;">`;
       } else {
         celdas[i].innerHTML = `<input name="${campos[i]}" value="${texto}" style="width:100%;">`;
       }
@@ -149,7 +166,6 @@ function activarEdicion() {
   botones.style.display = "block";
 }
 
-
 document.getElementById("guardarCambios").addEventListener("click", async () => {
   const filas = document.querySelectorAll("table tbody tr");
 
@@ -157,19 +173,17 @@ document.getElementById("guardarCambios").addEventListener("click", async () => 
     const id = fila.getAttribute("data-id");
     if (!id) continue;
 
-    // Seleccionar inputs y selects
     const inputs = fila.querySelectorAll("input, select");
     if (!inputs.length) continue;
 
     const datos = {};
     for (let input of inputs) {
       if (input.value.trim() === "") {
-        alert("No se pueden dejar campos vacíos.");
+        await Swal.fire("Campos vacíos", "No se pueden dejar campos vacíos.", "warning");
         return;
       }
       datos[input.name] = input.value;
     }
-
 
     const response = await fetch(`/editar_cliente/${id}`, {
       method: "POST",
@@ -184,17 +198,16 @@ document.getElementById("guardarCambios").addEventListener("click", async () => 
         celdas[i].innerText = campo === "monto" ? actualizado[campo] + "C$" : actualizado[campo];
       });
     } else {
-      alert(`Error al guardar cliente con id ${id}`);
+      await Swal.fire("Error", `Error al guardar cliente con id ${id}`, "error");
     }
   }
 
   document.getElementById("botonesEdicion").style.display = "none";
-  alert("Cambios guardados.");
+  Swal.fire("Modificado", "Los datos del cliente han sido modificados!", "success");
 });
 
 document.getElementById("cancelarCambios").addEventListener("click", () => {
-  copiaOriginal.forEach(item => {
-    const { fila, datosOriginales } = item;
+  copiaOriginal.forEach(({ fila, datosOriginales }) => {
     const celdas = fila.querySelectorAll("td");
     datosOriginales.forEach((valor, i) => {
       celdas[i].innerText = campos[i] === "monto" ? valor + "C$" : valor;
@@ -209,11 +222,7 @@ document.getElementById("cancelarCambios").addEventListener("click", () => {
 <script>
 function toggleAgregarForm() {
   const formAgregar = document.getElementById("formAgregar");
-  if (formAgregar.style.display === "none" || formAgregar.style.display === "") {
-    formAgregar.style.display = "block";
-  } else {
-    formAgregar.style.display = "none";
-  }
+  formAgregar.style.display = formAgregar.style.display === "none" || formAgregar.style.display === "" ? "block" : "none";
 }
 
 document.getElementById("cancelarAgregar").addEventListener("click", () => {
@@ -223,7 +232,6 @@ document.getElementById("cancelarAgregar").addEventListener("click", () => {
 
 document.getElementById("formNuevoCliente").addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const form = e.target;
   const datos = {
     nombre: form.nombre.value.trim(),
@@ -235,7 +243,7 @@ document.getElementById("formNuevoCliente").addEventListener("submit", async (e)
   };
 
   if (Object.values(datos).some(v => v === "")) {
-    alert("Todos los campos son obligatorios.");
+    await Swal.fire("Campos vacíos", "Todos los campos son obligatorios.", "warning");
     return;
   }
 
@@ -247,11 +255,8 @@ document.getElementById("formNuevoCliente").addEventListener("submit", async (e)
 
   if (response.ok) {
     const nuevo = await response.json();
-
-    const tbody = document.querySelector("table tbody");
     const fila = document.createElement("tr");
     fila.setAttribute("data-id", nuevo.id);
-
     fila.innerHTML = `
       <td>${nuevo.nombre}</td>
       <td>${nuevo.membresia}</td>
@@ -262,55 +267,63 @@ document.getElementById("formNuevoCliente").addEventListener("submit", async (e)
       <td><button class="btn-eliminar" data-id="${nuevo.id}">🗑️</button></td>
     `;
 
-    // Asignar evento al nuevo botón eliminar
-    fila.querySelector(".btn-eliminar").addEventListener("click", async () => {
-      const confirmar = confirm("¿Estás seguro de eliminar este cliente?");
-      if (!confirmar) return;
+    // Asignar evento de eliminación
+    fila.querySelector(".btn-eliminar").addEventListener("click", () => eliminarCliente(nuevo.id, fila));
 
-      const res = await fetch(`/eliminar_cliente/${nuevo.id}`, {
+    document.querySelector("table tbody").appendChild(fila);
+    form.reset();
+    document.getElementById("formAgregar").style.display = "none";
+    Swal.fire("Agregado", "El cliente ha sido agregado.", "success");
+  } else {
+    Swal.fire("Error", "Error al agregar el cliente.", "error");
+  }
+});
+
+document.querySelector("select[name='membresia']").addEventListener("change", function () {
+  const tipo = this.value;
+  const inputMonto = document.getElementById("inputMonto");
+  if (tipo === "Normal") inputMonto.value = 500;
+  else if (tipo === "Premium") inputMonto.value = 700;
+  else if (tipo === "Ultra") inputMonto.value = 1000;
+});
+</script>
+
+
+<!-- SCRIPT PARA ELIMINAR CLIENTE -->
+<script>
+function eliminarCliente(id, fila) {
+  Swal.fire({
+    title: "¿Estás seguro?",
+    text: "No podrás revertir esto",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar"
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      const res = await fetch(`/eliminar_cliente/${id}`, {
         method: "DELETE"
       });
 
       if (res.ok) {
         fila.remove();
-        alert("Cliente eliminado correctamente.");
+        Swal.fire("Eliminado", "El cliente ha sido eliminado correctamente.", "success");
       } else {
-        alert("Error al eliminar el cliente.");
+        Swal.fire("Error", "Hubo un problema al eliminar el cliente.", "error");
       }
-    });
-
-    tbody.appendChild(fila);
-    form.reset();
-    document.getElementById("formAgregar").style.display = "none";
-
-  } else {
-    alert("Error al agregar el cliente.");
-  }
-});
-</script>
-
-<!-- SCRIPT PARA ELIMINAR CLIENTE -->
-<script>
-document.querySelectorAll(".btn-eliminar").forEach(btn => {
-  btn.addEventListener("click", async () => {
-    const id = btn.dataset.id;
-
-    const confirmar = confirm("¿Estás seguro de eliminar este cliente?");
-    if (!confirmar) return;
-
-    const res = await fetch(`/eliminar_cliente/${id}`, {
-      method: "DELETE"
-    });
-
-    if (res.ok) {
-      const fila = document.querySelector(`tr[data-id='${id}']`);
-      fila.remove();
-      alert("Cliente eliminado correctamente.");
-    } else {
-      alert("Error al eliminar el cliente.");
     }
   });
+}
+
+document.querySelectorAll(".btn-eliminar").forEach(btn => {
+  const id = btn.dataset.id;
+  const fila = btn.closest("tr");
+  btn.addEventListener("click", () => eliminarCliente(id, fila));
 });
 </script>
+
+
 
 {% endblock %}

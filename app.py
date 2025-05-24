@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, flash,sess
 from config import config
 from flask_mysqldb import MySQL
 from flask_session import Session
-from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required
 import MySQLdb.cursors
 from flask import jsonify

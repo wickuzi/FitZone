@@ -254,7 +254,10 @@ background-image: linear-gradient(134deg, #0c5d27 0%, #00ffea 140%);
 
 
 @media (max-width: 600px) {
-
+.navbar .navbar-brand.logo {
+    
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
     .slogan {
         padding-top: 0rem;
     }

@@ -5,6 +5,13 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from config import config
+from datetime import datetime, date
+
+def formatear_fechas(maquina):
+    for campo in ['fecha_ingreso', 'ult_mantenimiento', 'prox_mantenimiento']:
+        if isinstance(maquina[campo], (datetime, date)):
+            maquina[campo] = maquina[campo].strftime('%Y-%m-%d')
+    return maquina
 
 app = Flask(__name__)
 app.config.from_object(config['development'])
@@ -130,30 +137,17 @@ def cajero():
 
     return render_template('auth/cajero.html', clientes=clientes)
 
-@app.route('/mantenimiento', methods=['GET', 'POST'])
+@app.route('/mantenimiento', methods=['GET'])
 @login_required
 def mantenimiento():
     conn = get_db_connection()
     cur = conn.cursor()
-
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        fecha_ingreso = request.form['fecha_ingreso']
-        ult_mantenimiento = request.form['ult_mantenimiento']
-        prox_mantenimiento = request.form['prox_mantenimiento']
-
-        cur.execute("""
-            INSERT INTO maquina (nombre, fecha_ingreso, ult_mantenimiento, prox_mantenimiento, gimnasio_id)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (nombre, fecha_ingreso, ult_mantenimiento, prox_mantenimiento, current_user.id))
-        conn.commit()
-
     cur.execute("SELECT * FROM maquina WHERE gimnasio_id = %s", (current_user.id,))
     maquinas = cur.fetchall()
     cur.close()
     conn.close()
-
     return render_template('auth/mantenimiento.html', maquinas=maquinas)
+
 
 @app.route('/logout')
 @login_required
@@ -252,6 +246,73 @@ def eliminar_cliente(id):
         cur.close()
         conn.close()
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/agregar_maquina', methods=['POST'])
+@login_required
+def agregar_maquina():
+    data = request.get_json()
+    nombre = data['nombre']
+    fecha_ingreso = data['fecha_ingreso']
+    ult_mantenimiento = data['ult_mantenimiento']
+    prox_mantenimiento = data['prox_mantenimiento']
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO maquina (nombre, fecha_ingreso, ult_mantenimiento, prox_mantenimiento, gimnasio_id)
+        VALUES (%s, %s, %s, %s, %s) RETURNING id
+    """, (nombre, fecha_ingreso, ult_mantenimiento, prox_mantenimiento, current_user.id))
+    
+    nueva_id = cur.fetchone()['id']
+    conn.commit()
+
+    cur.execute("SELECT * FROM maquina WHERE id = %s", (nueva_id,))
+    nueva_maquina = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    return jsonify(formatear_fechas(nueva_maquina))
+
+
+@app.route('/editar_maquina/<int:id>', methods=['POST'])
+@login_required
+def editar_maquina(id):
+    data = request.get_json()
+    nombre = data['nombre']
+    fecha_ingreso = data['fecha_ingreso']
+    ult_mantenimiento = data['ult_mantenimiento']
+    prox_mantenimiento = data['prox_mantenimiento']
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE maquina SET nombre = %s, fecha_ingreso = %s, ult_mantenimiento = %s, prox_mantenimiento = %s
+        WHERE id = %s AND gimnasio_id = %s
+    """, (nombre, fecha_ingreso, ult_mantenimiento, prox_mantenimiento, id, current_user.id))
+    conn.commit()
+
+    cur.execute("SELECT * FROM maquina WHERE id = %s", (id,))
+    maquina_actualizada = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    return jsonify(formatear_fechas(maquina_actualizada))
+
+
+@app.route('/eliminar_maquina/<int:id>', methods=['DELETE'])
+@login_required
+def eliminar_maquina(id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("DELETE FROM maquina WHERE id = %s AND gimnasio_id = %s", (id, current_user.id))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return '', 204  # 204 = No Content
 
 if __name__ == '__main__':
     app.run(debug=True)

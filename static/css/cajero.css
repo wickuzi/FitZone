@@ -1,0 +1,289 @@
+/* login.css - basado en mantenimiento.css */
+
+* {
+    font-family: 'Trebuchet MS', sans-serif;
+    box-sizing: border-box;
+}
+
+.logo {
+    max-width: 70px;
+    height: auto;
+}
+
+.navbar-brand {
+    font-size: 28px;
+}
+
+.container-fluid {
+    border-bottom: 2px solid rgb(12, 117, 56);
+}
+
+h1 {
+    text-align: center;
+    padding-top: 20px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 90%;
+    max-width: 900px;
+    margin: 30px auto;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 15px;
+}
+
+thead {
+    background-color: rgb(12, 117, 56);
+    color: white;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #e6ffe6;
+    transition: background-color 0.3s;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+/* Botones modernos, verdes claros y blancos */
+
+.modify, .add, .save, .cancel, .save2, .cancel2, .logout {
+    padding: 10px 25px;
+    font-size: 16px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        box-shadow 0.3s ease,
+        transform 0.2s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(18, 155, 64, 0.3);
+    min-width: 120px;
+    white-space: nowrap;
+}
+
+.modify, .add, .logout {
+    background-color: #129b40;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(18, 155, 64, 0.4);
+}
+
+.modify:hover, .add:hover, .logout:hover {
+    background-color: #0e7f32;
+    box-shadow: 0 8px 20px rgba(14, 127, 50, 0.7);
+    transform: translateY(-3px);
+}
+
+.save, .save2 {
+    background-color: #fbfbff;
+    color: rgb(0, 89, 255);
+    box-shadow: 0 4px 12px rgba(0, 89, 255, 0.3);
+}
+
+.save:hover, .save2:hover {
+    background-color: rgba(0, 89, 255, 0.15);
+    box-shadow: 0 8px 20px rgba(0, 89, 255, 0.6);
+    transform: translateY(-3px);
+}
+
+.cancel, .cancel2 {
+    background-color: #fff;
+    color: rgb(255, 0, 0);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+}
+
+.cancel:hover, .cancel2:hover {
+    background-color: rgba(255, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
+    transform: translateY(-3px);
+}
+
+.form {
+    width: 70%;
+    max-width: 680px;
+    margin: 20px auto;
+    border: 2px solid #c5c2c2;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 4px 4px 10px rgba(12, 117, 56, 0.781);
+    padding: 50px;
+    text-align: center;
+    display: block;
+}
+
+.formNuevoCliente {
+    width: 100%;
+    text-align: center;
+}
+
+/* Estilo general para inputs y selects */
+input:not([type="date"]), select {
+    width: 50%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 1;
+}
+
+/* Ajuste específico para input tipo date */
+input[type="date"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 1;
+    font-family: inherit;
+}
+
+.save2, .cancel2 {
+    width: 25%;
+    padding: 10px;
+    font-size: 14px;
+    margin-top: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease-out;
+}
+
+.save2 {
+    background-color: #fbfbff;
+    color: #000;
+    margin-right: 10px;
+    border-color: rgb(0, 89, 255);
+}
+
+.save2:hover {
+    color: rgb(0, 89, 255);
+    background-color: rgba(0, 89, 255, 0.144);
+}
+
+.cancel2 {
+    background-color: #fff;
+    color: #000;
+    border-color: rgb(255, 0, 0);
+}
+
+.cancel2:hover {
+    color: rgb(255, 0, 0);
+    background-color: #ff000017;
+}
+
+.form h3 {
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.btn-eliminar {
+    border: none;
+    transition: 0.3s ease-in;
+}
+
+.btn-eliminar:hover {
+    border-radius: 5px;
+    background-color: rgba(255, 0, 0, 0.473);
+}
+
+.table-container {
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 30px auto;
+    width: 90%;
+    max-width: 900px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+thead tr {
+    position: sticky;
+    top: 0;
+    background-color: rgb(12, 117, 56);
+    color: white;
+    z-index: 1;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    h1, h2, .navbar-brand {
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .container-fluid {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .form {
+        flex-direction: column;
+        padding: 20px;
+        width: 95%;
+    }
+
+    input,
+    input[type="date"],
+    select {
+        width: 100% !important;
+        margin-bottom: 10px;
+    }
+
+    .select {
+        margin-bottom: 10px;
+    }
+
+    .formNuevoCliente {
+        text-align: center;
+    }
+
+    .modify, .add, .save, .cancel, .save2, .cancel2, .logout {
+        width: 100% !important;
+        margin: 10px 0 !important;
+        font-size: 16px;
+        min-width: unset;
+    }
+
+    table {
+        font-size: 12px;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .logo {
+        max-width: 60px;
+    }
+
+    .logout {
+        position: static;
+        margin: 10px auto;
+    }
+}

@@ -1,0 +1,32 @@
+{% extends './base.html' %}
+
+{% block title %}FitZone - Escoge un módulo{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/modulos.css') }}">
+{% endblock %}
+
+{% block body %}
+
+<!-- Header -->
+			<header id="header">
+				<div class="content">
+					<h1><a >{{ current_user.nombre }}</a></h1>
+					<p>Hora de gestionar tu gimnasio<br />
+					Escoge un modulo para empezar</p>
+					<ul class="actions">
+                <a href="{{ url_for('cajero') }}" class="btn btn-primary me-2">
+    <i class="fas fa-cash-register"></i> Cajero
+  </a>						
+  <a href="{{ url_for('mantenimiento') }}" class="btn btn-primary">
+    <i class="fas fa-tools"></i> Mantenimiento
+  </a>
+				</div>
+                 {% set introduction_url = url_for('introduction') %}
+				<div class="image phone"><div class="inner"><img src="static/img/Imagen1.png" onclick="location.href='{{ introduction_url }}'" style="cursor: pointer;" /></div></div>
+			</header>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+{% endblock %}
+

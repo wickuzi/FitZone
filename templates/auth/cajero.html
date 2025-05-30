@@ -1,0 +1,329 @@
+{% extends './base.html' %}
+
+{% block title %}FitZone{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/cajero.css')}}">
+{% endblock %}
+
+{% block body %}
+
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
+     {% set modulos_url = url_for('modulos') %}
+    <a class="navbar-brand" href='{{ modulos_url }}'>
+      <img src="static/img/Imagen1.jpg" alt="Logo" class="logo">
+      FitZone
+    </a>
+    <h2 class="mode">Caja</h2>
+  </div>
+</nav>
+
+<h1>¡Bienvenido/a!</h1>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Membresía</th>
+        <th>Estado</th>
+        <th>Método de pago</th>
+        <th>Monto</th>
+        <th>Fecha de Ingreso</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in clientes %}
+      <tr data-id="{{ c.id }}">
+        <td>{{ c.nombre }}</td>
+        <td>{{ c.membresia }}</td>
+        <td>{{ c.estado }}</td>
+        <td>{{ c.metodo_pago }}</td>
+        <td>{{ c.monto }}C$</td>
+        <td>{{ c.vencimiento }}</td>
+        <td>
+          <button class="btn-eliminar" data-id="{{ c.id }}">🗑️</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div id="botonesEdicion"  style="display:none; text-align: center;">
+  <button id="guardarCambios" class="save">Guardar Cambios</button>
+  <button id="cancelarCambios" class="cancel">Cancelar</button>
+</div>
+
+<div class="button-group">
+  <button onclick="activarEdicion()" class="modify">Modificar Cliente</button>
+  <button onclick="toggleAgregarForm()" class="add">Agregar Cliente</button>
+  
+
+</div>
+
+<div id="formAgregar" class="form" style="display:none; margin-top: 20px; border: 1px solid #ccc; padding: 10px;">
+  <h3>Agregar Cliente</h3>
+  <form id="formNuevoCliente" class="formNuevoCliente">
+    <input name="nombre" style="width: 100%;" placeholder="Nombre" required>
+    <select class="select" style="width: 100%;"name="membresia" required>
+      <option value="" disabled selected>Tipos. Membresia</option>
+      <option value="Normal">Normal</option>
+      <option value="Premium">Premium</option>
+      <option value="Ultra">Ultra</option>
+    </select>
+    <select class="select" style="width: 100%;"name="estado" required>
+      <option value="" disabled selected>Estado</option>
+      <option value="Vigente">Vigente</option>
+      <option value="Expirado">Expirado</option>
+     
+    </select>
+<select class="select" style="width: 100%;"name="metodo_pago" required>
+      <option value="" disabled selected>Met. Pago</option>
+      <option value="Tarjeta">Tarjeta</option>
+      <option value="Efectivo">Efectivo</option>
+      
+    </select>    
+    <input name="monto" id="inputMonto" style="width: 100%;" placeholder="Monto" required type="number" readonly>
+    <input name="vencimiento" style="width: 100%;" placeholder="Fecha Vencimiento" required type="date">
+
+    <br><br>
+    <button type="submit" class="save2">Guardar</button>
+    <button type="button" id="cancelarAgregar" class="cancel2">Cancelar</button>
+  </form>
+</div>
+
+
+<!--SCRIPTS JAVASCRIPT-->
+<!-- SCRIPT DE MODIFICAR CLIENTE -->
+<script>
+const campos = ['nombre', 'membresia', 'estado', 'metodo_pago', 'monto', 'vencimiento'];
+let copiaOriginal = [];
+
+function activarEdicion() {
+  const filas = document.querySelectorAll("table tbody tr");
+  const botones = document.getElementById("botonesEdicion");
+  copiaOriginal = [];
+
+  filas.forEach(fila => {
+    const celdas = fila.querySelectorAll("td");
+    const datosOriginales = [];
+
+    for (let i = 0; i < campos.length; i++) {
+      if (celdas[i].querySelector('input') || celdas[i].querySelector('select')) continue;
+      const texto = celdas[i].innerText.replace("C$", "").trim();
+      datosOriginales.push(texto);
+
+      if (campos[i] === "membresia") {
+        celdas[i].innerHTML = `
+          <select name="membresia" style="width:100%">
+            <option value="Normal" ${texto === "Normal" ? "selected" : ""}>Normal</option>
+            <option value="Premium" ${texto === "Premium" ? "selected" : ""}>Premium</option>
+            <option value="Ultra" ${texto === "Ultra" ? "selected" : ""}>Ultra</option>
+          </select>`;
+
+        setTimeout(() => {
+          const membresiaSelect = celdas[i].querySelector("select[name='membresia']");
+          membresiaSelect.addEventListener("change", () => {
+            const fila = membresiaSelect.closest("tr");
+            const montoInput = fila.querySelector("input[name='monto']");
+            if (!montoInput) return;
+
+            let nuevoMonto = 0;
+            if (membresiaSelect.value === "Normal") nuevoMonto = 500;
+            else if (membresiaSelect.value === "Premium") nuevoMonto = 700;
+            else if (membresiaSelect.value === "Ultra") nuevoMonto = 1000;
+
+            montoInput.value = nuevoMonto;
+          });
+        }, 0);
+      } else if (campos[i] === "estado") {
+        celdas[i].innerHTML = `
+          <select name="estado" style="width:100%">
+            <option value="Vigente" ${texto === "Vigente" ? "selected" : ""}>Vigente</option>
+            <option value="Expirado" ${texto === "Expirado" ? "selected" : ""}>Expirado</option>
+          </select>`;
+      } else if (campos[i] === "metodo_pago") {
+        celdas[i].innerHTML = `
+          <select name="metodo_pago" style="width:100%">
+            <option value="Tarjeta" ${texto === "Tarjeta" ? "selected" : ""}>Tarjeta</option>
+            <option value="Efectivo" ${texto === "Efectivo" ? "selected" : ""}>Efectivo</option>
+          </select>`;
+      } else if (campos[i] === "vencimiento") {
+        const dateValue = new Date(texto);
+        const formattedDate = dateValue.toISOString().split('T')[0];
+        celdas[i].innerHTML = `<input name="vencimiento" type="date" value="${formattedDate}" style="width:100%;">`;
+      } else {
+        celdas[i].innerHTML = `<input name="${campos[i]}" value="${texto}" style="width:100%;">`;
+      }
+    }
+
+    copiaOriginal.push({ fila, datosOriginales });
+  });
+
+  botones.style.display = "block";
+}
+
+document.getElementById("guardarCambios").addEventListener("click", async () => {
+  const filas = document.querySelectorAll("table tbody tr");
+
+  for (const fila of filas) {
+    const id = fila.getAttribute("data-id");
+    if (!id) continue;
+
+    const inputs = fila.querySelectorAll("input, select");
+    if (!inputs.length) continue;
+
+    const datos = {};
+    for (let input of inputs) {
+      if (input.value.trim() === "") {
+        await Swal.fire("Campos vacíos", "No se pueden dejar campos vacíos.", "warning");
+        return;
+      }
+      datos[input.name] = input.value;
+    }
+
+    const response = await fetch(`/editar_cliente/${id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos)
+    });
+
+    if (response.ok) {
+      const actualizado = await response.json();
+      const celdas = fila.querySelectorAll("td");
+      campos.forEach((campo, i) => {
+        celdas[i].innerText = campo === "monto" ? actualizado[campo] + "C$" : actualizado[campo];
+      });
+    } else {
+      await Swal.fire("Error", `Error al guardar cliente con id ${id}`, "error");
+    }
+  }
+
+  document.getElementById("botonesEdicion").style.display = "none";
+  Swal.fire("Modificado", "Los datos del cliente han sido modificados!", "success");
+});
+
+document.getElementById("cancelarCambios").addEventListener("click", () => {
+  copiaOriginal.forEach(({ fila, datosOriginales }) => {
+    const celdas = fila.querySelectorAll("td");
+    datosOriginales.forEach((valor, i) => {
+      celdas[i].innerText = campos[i] === "monto" ? valor + "C$" : valor;
+    });
+  });
+
+  document.getElementById("botonesEdicion").style.display = "none";
+});
+</script>
+
+<!-- SCRIPT PARA AGREGAR CLIENTE -->
+<script>
+function toggleAgregarForm() {
+  const formAgregar = document.getElementById("formAgregar");
+  formAgregar.style.display = formAgregar.style.display === "none" || formAgregar.style.display === "" ? "block" : "none";
+}
+
+document.getElementById("cancelarAgregar").addEventListener("click", () => {
+  document.getElementById("formAgregar").style.display = "none";
+  document.getElementById("formNuevoCliente").reset();
+});
+
+document.getElementById("formNuevoCliente").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const datos = {
+    nombre: form.nombre.value.trim(),
+    membresia: form.membresia.value.trim(),
+    estado: form.estado.value.trim(),
+    metodo_pago: form.metodo_pago.value.trim(),
+    monto: form.monto.value.trim(),
+    vencimiento: form.vencimiento.value.trim()
+  };
+
+  if (Object.values(datos).some(v => v === "")) {
+    await Swal.fire("Campos vacíos", "Todos los campos son obligatorios.", "warning");
+    return;
+  }
+
+  const response = await fetch("/agregar_cliente", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(datos)
+  });
+
+  if (response.ok) {
+    const nuevo = await response.json();
+    const fila = document.createElement("tr");
+    fila.setAttribute("data-id", nuevo.id);
+    fila.innerHTML = `
+      <td>${nuevo.nombre}</td>
+      <td>${nuevo.membresia}</td>
+      <td>${nuevo.estado}</td>
+      <td>${nuevo.metodo_pago}</td>
+      <td>${nuevo.monto}C$</td>
+      <td>${nuevo.vencimiento}</td>
+      <td><button class="btn-eliminar" data-id="${nuevo.id}">🗑️</button></td>
+    `;
+
+    // Asignar evento de eliminación
+    fila.querySelector(".btn-eliminar").addEventListener("click", () => eliminarCliente(nuevo.id, fila));
+
+    document.querySelector("table tbody").appendChild(fila);
+    form.reset();
+    document.getElementById("formAgregar").style.display = "none";
+    Swal.fire("Agregado", "El cliente ha sido agregado.", "success");
+  } else {
+    Swal.fire("Error", "Error al agregar el cliente.", "error");
+  }
+});
+
+document.querySelector("select[name='membresia']").addEventListener("change", function () {
+  const tipo = this.value;
+  const inputMonto = document.getElementById("inputMonto");
+  if (tipo === "Normal") inputMonto.value = 500;
+  else if (tipo === "Premium") inputMonto.value = 700;
+  else if (tipo === "Ultra") inputMonto.value = 1000;
+});
+</script>
+
+
+<!-- SCRIPT PARA ELIMINAR CLIENTE -->
+<script>
+function eliminarCliente(id, fila) {
+  Swal.fire({
+    title: "¿Estás seguro?",
+    text: "No podrás revertir esto",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar"
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      const res = await fetch(`/eliminar_cliente/${id}`, {
+        method: "DELETE"
+      });
+
+      if (res.ok) {
+        fila.remove();
+        Swal.fire("Eliminado", "El cliente ha sido eliminado correctamente.", "success");
+      } else {
+        Swal.fire("Error", "Hubo un problema al eliminar el cliente.", "error");
+      }
+    }
+  });
+}
+
+document.querySelectorAll(".btn-eliminar").forEach(btn => {
+  const id = btn.dataset.id;
+  const fila = btn.closest("tr");
+  btn.addEventListener("click", () => eliminarCliente(id, fila));
+});
+</script>
+
+
+
+{% endblock %}

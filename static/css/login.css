@@ -1,0 +1,146 @@
+* {
+  font-family: 'Trebuchet MS', sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.logo-contenedor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 30px 0 10px 0;
+  flex-wrap: wrap; /* Para que se acomode bien en pantallas pequeñas */
+  text-align: center;
+}
+
+.Logo {
+  padding-top: 20px;
+  max-width: 95px;
+  height: auto;
+  cursor: pointer;
+}
+
+h1.logotexto {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 40px;
+  padding-top: 15px;
+  margin: 0;
+}
+
+.lr {
+  width: 90%;
+  max-width: 600px;
+  margin: 20px auto;
+  border: 2px solid #c5c2c2;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 4px 4px 10px rgba(12, 117, 56, 0.781);
+  padding: 20px;
+  text-align: center;
+}
+
+h2 {
+  padding-bottom: 5px;
+}
+
+p.plogin {
+  margin-bottom: 5px;
+  text-align: left;
+  margin-left: 5px;
+}
+
+.tlogin {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  background-color: rgba(250, 235, 215, 0.396);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.tlogin:focus {
+  border-color: #129b40;
+  outline: none;
+}
+
+.login {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #129b40;
+  color: #ffffff;
+  margin-top: 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+}
+
+.login:hover {
+  color: rgb(0, 0, 0);
+  background-color: #ffffff;
+  border: 1px solid #129b40;
+}
+
+.flash {
+  text-align: center;
+  color: rgb(215, 26, 26);
+  margin-top: 10px;
+}
+
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(135deg, #e0f7ec, #ffffff);
+  background-size: 400% 400%;
+  animation: fondoAnimado 15s ease infinite;
+}
+
+@keyframes fondoAnimado {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Responsive para móviles */
+@media (max-width: 600px) {
+  h1.logotexto {
+    font-size: 28px;
+  }
+
+  .Logo {
+    max-width: 90px;
+    padding-top: 12px;
+  }
+
+  .lr {
+    padding: 15px;
+    width: 95%;
+  }
+
+  .tlogin, .login {
+    font-size: 15px;
+    padding: 10px;
+  }
+
+  p.plogin {
+    font-size: 14px;
+  }
+}
+

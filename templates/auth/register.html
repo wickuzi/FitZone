@@ -1,0 +1,73 @@
+{% extends './base.html' %}
+
+{% block title %}FitZone - Iniciar Sesión{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block body %}
+<div id="particles-js"></div>
+
+<form method="POST" action="{{ url_for('registro_gimnasio') }}">
+  <div class="logo-contenedor">
+    {% set intro_url = url_for('introduction') %}
+    <img src="{{ url_for('static', filename='img/Imagen1.jpg') }}" alt="Logo" class="Logo" onclick="location.href='{{ intro_url }}'">
+    <h1 class="logotexto">FITZONE</h1>
+  </div>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="lr">
+    <h2>¡Registrate!</h2>
+
+    <p class="plogin">Nombre del gimnasio</p>
+    <input type="text" class="tlogin" id="nombre" name="nombre" required autofocus>
+
+    <p class="plogin">Contraseña</p>
+    <input type="password" class="tlogin" id="contrasena" name="contrasena" required>
+
+    <button type="submit" class="login">Registrate ahora</button>
+
+    <p class="plogin" style="margin-top: 10px; text-align: center;">¿Ya cuentas con tu gym?
+      <a href="{{ url_for('login_gimnasio') }}" style="color: #00b894; text-decoration: underline;">Ingresa aquí</a>.
+    </p>
+  </div>
+</form>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+<script>
+  particlesJS("particles-js", {
+    "particles": {
+      "number": { "value": 150 },
+      "color": { "value": "#00b894" },
+      "shape": { "type": "circle" },
+      "opacity": { "value": 0.4, "random": true },
+      "size": { "value": 4, "random": true },
+      "move": {
+        "enable": true,
+        "speed": 1,
+        "direction": "none",
+        "out_mode": "bounce"
+      }
+    },
+    "interactivity": {
+      "events": {
+        "onhover": { "enable": true, "mode": "repulse" }
+      }
+    },
+    "retina_detect": true
+  });
+</script>
+
+{% endblock %}
+

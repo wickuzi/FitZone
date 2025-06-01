@@ -1,0 +1,375 @@
+body {
+    background: #fff;
+    font-family: 'Trebuchet MS', sans-serif;
+    color: #2E2E2E;
+    font-weight: 400;
+}
+
+.container {
+    max-width: 1280px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+a:focus {
+    box-shadow: none;
+}
+
+a:focus,
+a:hover,
+a:active {
+    text-decoration: none;
+    color: #129b40;
+}
+
+
+.container .columns {
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
+.container .column {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.yeo-body {
+    max-width: 1280px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    text-align: center;
+}
+
+
+.navbar .navbar-brand.logo {
+    font-size: 35px;
+    font-weight: 400;
+    text-transform: none;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    letter-spacing: 2px;
+}
+.navbar-brand.logo:hover{
+    color: #fff;
+
+}
+
+.logo-img {
+    padding-right: 5px;
+    display: inline-block;
+    height: 100px;
+}
+
+.yeo-slogan {
+    background: #129b40 center;
+    background-size: auto;
+    padding-bottom: 3rem;
+/* Rectangle 10: */
+background-image: -webkit-linear-gradient(44deg, #f7f7f7 1%, #ffffff 1%);
+background-image: -o-linear-gradient(44deg, #ffffff 0%, #00ffea 110%);
+background-image: linear-gradient(134deg, #0c5d27 0%, #00ffea 140%);
+}
+
+.yeo-slogan .slogan-bold {
+    display: block;
+}
+
+.yeo-slogan .slogan-normal {
+    display: block;
+}
+
+.yeo-slogan p {
+    font-size: .9rem;
+    line-height: 1.6;
+    font-weight: 200;
+    opacity: 0.8;
+    width: 90%;
+    margin-bottom: 2rem;
+}
+
+.slogan {
+    background: transparent;
+    padding-top: 2rem;
+    color: #fff;
+    text-align: left;
+    max-width: 1280px;
+}
+
+.slogan h1 {
+    font-size: 3.2rem;
+    font-family: 'Poppins', serif;
+    font-weight: 700;
+    text-shadow: 0px 5px 8px rgba(0, 0, 0, 0.1);
+    line-height: 1.3;
+    max-width: 950px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.05rem;
+}
+
+
+.slogan-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border: none;
+    border-radius: 20px; 
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); 
+    margin-top: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.slogan-img:hover {
+    transform: scale(1.02); 
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+.yeo-header {
+    background: transparent;
+}
+
+.yeo-header a {
+    color: #fff;
+}
+
+.slogan .slogan-bold {
+    color: #00ffd4;
+}
+
+
+.slogan .btn-start {
+    padding: .9rem 1.5rem;
+    height: auto;
+    background: transparent;
+    color: #fff;
+    font-weight: 400;
+    text-transform: uppercase;
+    border-color: rgba(255, 255, 255, .4);
+    letter-spacing: 0.05rem;
+}
+
+.feature-title {
+    font-weight: 200;
+    font-size: 1rem;
+    padding: .5rem 0 .5rem 0;
+    opacity: .5;
+    text-align: center;
+    display: inline-block;
+    border-bottom: 1px solid #bcb9b9;
+    margin: 0 auto 2rem;
+}
+
+.yeo-header .navbar {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.5rem 0 1rem 0;
+}
+
+.yeo-header .navbar-section .btn.btn-link {
+    color: #fff;
+    padding: .25rem 1.2rem;
+    opacity: .9;
+}
+
+.yeo-header .btn-hire-me {
+    background: #00bc9e;
+    border-color: transparent;
+    color: #ffffff;
+    border-radius: 50px;
+    padding: .25rem 1rem;
+}
+
+
+
+/* fitzone ofrece */
+
+.yeo-do {
+    padding: 1rem 0 8rem 0; /* espacio amplio arriba y abajo */
+    text-align: center;
+}
+
+.yeo-do .yeo-do-content {
+    padding: 1rem;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    margin: 1rem;
+}
+
+.yeo-do .yeo-do-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.yeo-do img {
+    max-height: 80px;
+}
+
+.yeo-do h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 1.5rem 0 1rem 0;
+    color: #222;
+}
+
+.yeo-do p {
+    font-size: 1rem;
+    font-weight: 400;
+    opacity: 0.9;
+    line-height: 1.8;
+    max-width: 500px;
+    margin: 0 auto;
+    color: #444;
+}
+
+.yeo-do-content i {
+    font-size: 2.8rem;
+    color: #0ac482;
+    margin-bottom: 1rem;
+}
+
+
+
+
+.yeo-footer {
+   background-image: -webkit-linear-gradient(44deg, #0c5d27 0%, #ffffff 100%);
+    background-image: -o-linear-gradient(44deg, #0c5d27 0%, #00ffea 150%);
+    background-image: linear-gradient(134deg, #0c5d27 0%, #00ffea 150%);
+    color: #fff;
+    padding: 3rem 0;
+}
+
+.yeo-footer h4 {
+    font-size: 1rem;
+    color: #fff;
+}
+
+.yeo-footer .nav .nav-item a {
+    padding: .3rem 0rem;
+    color: #fff;
+    opacity: 0.8;
+    font-weight: 200;
+}
+
+
+
+@media (max-width: 600px) {
+.navbar .navbar-brand.logo {
+    
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+    .slogan {
+        padding-top: 0rem;
+    }
+
+    .slogan h1 {
+        font-size: 1.6rem;
+        line-height: 1.5;
+        margin-bottom: .5rem;
+    }
+
+    .yeo-slogan {
+        padding-bottom: 2rem;
+    }
+
+    .yeo-slogan p {
+        font-size: .7rem;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .yeo-do {
+        padding: 1rem 0 2rem 0;
+    }
+
+    .yeo-do .yeo-do-content {
+       padding-left: 8px;        
+        padding-bottom: 1.5rem;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 1.5rem;
+    }
+
+    .yeo-client a {
+        margin: 10px 15px;
+    }
+
+    .yeo-price .panel {
+        text-align: center;
+        background: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .yeo-do h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        padding: 1rem 0 .1rem 0;
+    }
+
+    .yeo-work {
+        padding: 2rem 0;
+        text-align: center;
+    }
+
+    .yeo-work .yeo-work-feature {
+        font-size: 2rem;
+    }
+
+    .yeo-open-source {
+        padding: 2rem 0;
+    }
+
+    .open-source-feature {
+        font-size: 2rem;
+    }
+
+    .yeo-client img {
+    height: 30px;
+}
+
+    .yeo-footer {
+        padding: 2rem 0;
+    }
+
+    .yeo-footer-content {
+        padding-bottom: 1rem;
+    }
+
+    .yeo-footer h4 {
+        font-size: 1rem;
+        color: #fff;
+        margin-bottom: 0;
+    }
+
+    .feature-title {
+        font-weight: 200;
+        font-size: 1rem;
+        padding: 1rem 0 1rem 0;
+        opacity: .5;
+    }
+
+    .yeo-team {
+        padding: 1rem 0;
+    }
+
+    .yeo-price {
+        padding: 0 0 2rem 0;
+    }
+
+    .yeo-team .title {
+        font-size: .8rem;
+        opacity: .5;
+        padding-bottom: 2rem;
+        display: block;
+    }
+
+    .yeo-price .btn-price {
+        padding: .6rem .5rem;
+        background: #382CBE;
+        color: #fff;
+        height: auto;
+        width: 90%;
+        font-size: .8rem;
+    }
+
+}

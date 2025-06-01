@@ -1,0 +1,131 @@
+{% extends './base.html' %}
+
+{% block title %}FitZone{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/spectre.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/spectre-exp.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/spectre-icons.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/yeo.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="yeo-slogan">
+    <div class="container yeo-header">
+        <div class="columns">
+            <div class="column col-12">
+                <header class="navbar">
+                    <section class="navbar-section">
+                        <a class="navbar-brand logo" href="#">
+                            <img class="logo-img" src="{{ url_for('static', filename='img/Imagen1.png') }}" alt="FitZone Logo">
+                            <span>FITZONE</span>
+                        </a>
+                    </section>
+                    <section class="navbar-section hide-sm">
+                        {% set share_url = url_for('share') %}
+                         <a class="btn btn-link" onclick="location.href='{{ share_url }}'">Comparte FitZone</a>
+                        <a class="btn btn-link" href="#FitZone">FitZone Ofrece</a>
+                        {% set login_url = url_for('login_gimnasio') %}
+                        <a class="btn btn-primary btn-hire-me" onclick="location.href='{{ login_url }}'">¡Inicia ahora!</a>
+                    </section>
+                </header>
+            </div>
+        </div>
+    </div>
+    <div class="container slogan">
+        <div class="columns">
+            <div class="column col-7 col-sm-12">
+                <div class="slogan-content">
+                    <h1 style="font-family: 'Poppins', sans-serif;">
+                        <span class="slogan-bold">Gestiona</span> 
+                        <span class="slogan-bold">Automatiza</span>
+                        <span class="slogan-bold">Controla</span>
+                    </h1>
+                    <p>FitZone digitaliza y automatiza la gestión de tu gimnasio, todo desde un solo lugar. Más control, menos esfuerzo.</p>
+                    {% set login_url = url_for('login_gimnasio') %}
+                    <a class="btn btn-primary btn-lg btn-start" onclick="location.href='{{ login_url }}'">¡Gestiona tu gimnasio ya!</a>
+                </div>
+            </div>
+            <div class="column col-5 hide-sm">
+                <img class="slogan-img" src="{{ url_for('static', filename='img/generate.png') }}" alt="Gestiona tu gimnasio">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="yeo-do" id="FitZone">
+    <div class="container yeo-body">
+        <div class="columns">
+            <div class="column col-12">
+                <h2 class="feature-title">FitZone Ofrece</h2>
+            </div>
+            <div class="column col-4 col-sm-12">
+                <div class="yeo-do-content">
+                    <i class="fa-solid fa-circle-check fa-2x"></i>
+                    <h3>Simplicidad</h3>
+                    <p>Interfaz intuitiva y fácil de usar, diseñada para que cualquier miembro del equipo pueda gestionar el gimnasio sin complicaciones.</p>
+                </div>
+            </div>
+            <div class="column col-4 col-sm-12">
+                <div class="yeo-do-content">
+                    <i class="fa-solid fa-gears fa-2x"></i>
+                    <h3>Automatización Efectiva</h3>
+                    <p>FitZone automatiza procesos clave para que ahorres tiempo y evites errores.</p>
+                </div>
+            </div>
+            <div class="column col-4 col-sm-12">
+                <div class="yeo-do-content">
+                    <i class="fa-solid fa-laptop fa-2x"></i>
+                    <h3>Diseño Versátil</h3>
+                    <p>Adaptable a cualquier tipo de gimnasio, con un diseño moderno y responsive que luce profesional en cualquier dispositivo.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="yeo-footer">
+    <div class="container">
+        <div class="columns">
+            <div class="column col-3 col-sm-6">
+                <div class="yeo-footer-content">
+                    <h4>Servicios</h4>
+                    <ul class="nav">
+                        <li class="nav-item"><a href="#">Gestión de Clientes</a></li>
+                        <li class="nav-item"><a href="#">Gestión de Maquinas</a></li>
+                        <li class="nav-item"><a href="#">Control de Pagos</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="column col-3 col-sm-6">
+                <div class="yeo-footer-content">
+                    <h4>Clientes</h4>
+                    <ul class="nav">
+                        <li class="nav-item"><a href="#">Gimnasios Independientes</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="column col-3 col-sm-6">
+                <div class="yeo-footer-content">
+                    <h4>Contáctanos</h4>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a href="https://github.com/wickuzi/FitZone">contact@fitzone.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="column col-3 col-sm-6">
+                <div class="yeo-footer-content">
+                    <h4>Copyright</h4>
+                    <ul class="nav">
+                        <li class="nav-item"><a href="#">Términos y Condiciones</a></li>
+                        <li class="nav-item"><a href="#">Política de Privacidad</a></li>
+                        <li class="nav-item"><a href="#">©2025 FitZone. Todos los derechos reservados.</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,258 @@
+{% extends './base.html' %}
+
+{% block title %}FitZone{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mantenimiento.css')}}">
+{% endblock %}
+
+{% block body %}
+<nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
+    {% set modulos_url = url_for('modulos') %}
+    <a class="navbar-brand" href='{{ modulos_url }}'>
+      <img src="static/img/Imagen1.jpg" alt="Logo" class="logo">
+      FitZone
+    </a>
+    <h2 class="mode">Mantenimiento</h2>
+  </div>
+</nav>
+
+<h1>¡Bienvenido/a!</h1>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Máquina</th>
+        <th>Fecha de Ingreso</th>
+        <th>Últ. Mantenimiento</th>
+        <th>Próx. Mantenimiento</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in maquinas %}
+      <tr data-id="{{ m.id }}">
+        <td>{{ m.nombre }}</td>
+        <td>{{ m.fecha_ingreso }}</td>
+        <td>{{ m.ult_mantenimiento }}</td>
+        <td>{{ m.prox_mantenimiento }}</td>
+        <td>
+          <button class="btn-eliminar" data-id="{{ m.id }}">🗑️</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div id="botonesEdicion" style="display:none; text-align:center;">
+  <button id="guardarCambios" class="save">Guardar Cambios</button>
+  <button id="cancelarCambios" class="cancel">Cancelar</button>
+</div>
+
+<div class="button-group">
+  <button onclick="activarEdicion()" class="modify">Modificar Datos</button>
+  <button onclick="toggleAgregarForm()" class="add">Agregar Máquina</button>
+ 
+</div>
+
+<div id="formAgregar" class="form" style="display:none; margin-top:20px; border:1px solid #ccc; padding:10px;">
+  <h3>Agregar Máquina</h3>
+  <form id="formNuevaMaquina" class="formNuevoCliente">
+    <input name="nombre" style="width: 100%;"placeholder="Nombre" required>
+    <input name="fecha_ingreso" style="width: 100%;"placeholder="Fecha Ingreso" required type="date">
+    <input name="ult_mantenimiento" style="width: 100%;"placeholder="Últ. Mantenimiento" required type="date">
+    <input name="prox_mantenimiento" style="width: 100%;"placeholder="Próx. Mantenimiento" required type="date">
+    <br><br>
+    <button type="submit" class="save2">Guardar</button>
+    <button type="button" id="cancelarAgregar" class="cancel2">Cancelar</button>
+  </form>
+</div>
+
+<!--JAVASCRIPT-->
+<script>
+const campos = ['nombre', 'fecha_ingreso', 'ult_mantenimiento', 'prox_mantenimiento'];
+let copiaOriginal = [];
+
+function activarEdicion() {
+  const filas = document.querySelectorAll("table tbody tr");
+  const botones = document.getElementById("botonesEdicion");
+  copiaOriginal = [];
+
+  filas.forEach(fila => {
+    const celdas = fila.querySelectorAll("td");
+    const datosOriginales = [];
+
+    campos.forEach((campo, i) => {
+      const texto = celdas[i].innerText;
+      datosOriginales.push(texto);
+
+      const esFecha = campo.includes("fecha") || campo.includes("mantenimiento");
+      const tipoInput = esFecha ? "date" : "text";
+
+      let valor = texto;
+      if (esFecha) {
+        const partes = texto.split("/");
+        if (partes.length === 3) {
+          const [dia, mes, anio] = partes;
+          valor = `${anio}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+        } else if (/^\d{2}-\d{2}-\d{4}$/.test(texto)) {
+          const [dia, mes, anio] = texto.split("-");
+          valor = `${anio}-${mes}-${dia}`;
+        }
+      }
+
+      celdas[i].innerHTML = `<input type="${tipoInput}" name="${campo}" value="${valor}" style="width:100%;">`;
+    });
+
+    copiaOriginal.push({ fila, datosOriginales });
+  });
+
+  botones.style.display = "block";
+}
+
+// GUARDAR CAMBIOS
+document.getElementById("guardarCambios").addEventListener("click", async () => {
+  const filas = document.querySelectorAll("table tbody tr");
+
+  for (const fila of filas) {
+    const id = fila.dataset.id;
+    const inputs = fila.querySelectorAll("input");
+    if (!inputs.length) continue;
+
+    const datos = {};
+    for (let input of inputs) {
+      if (input.value.trim() === "") {
+        await Swal.fire("Campos vacíos", "No se pueden dejar campos vacíos.", "warning");
+        return;
+      }
+      datos[input.name] = input.value;
+    }
+
+    const response = await fetch(`/editar_maquina/${id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos)
+    });
+
+    if (response.ok) {
+      const actualizado = await response.json();
+      const celdas = fila.querySelectorAll("td");
+      campos.forEach((campo, i) => {
+        celdas[i].innerText = actualizado[campo];
+      });
+    } else {
+      await Swal.fire("Error", "Error al guardar los cambios.", "error");
+      return;
+    }
+  }
+
+  document.getElementById("botonesEdicion").style.display = "none";
+  Swal.fire("Modificado", "Los datos han sido modificados.", "success");
+});
+
+// CANCELAR CAMBIOS
+document.getElementById("cancelarCambios").addEventListener("click", () => {
+  copiaOriginal.forEach(({ fila, datosOriginales }) => {
+    const celdas = fila.querySelectorAll("td");
+    datosOriginales.forEach((valor, i) => {
+      celdas[i].innerText = valor;
+    });
+  });
+
+  document.getElementById("botonesEdicion").style.display = "none";
+});
+
+// AGREGAR MÁQUINA
+document.getElementById("formNuevaMaquina").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const form = e.target;
+  const datos = {
+    nombre: form.nombre.value.trim(),
+    fecha_ingreso: form.fecha_ingreso.value.trim(),
+    ult_mantenimiento: form.ult_mantenimiento.value.trim(),
+    prox_mantenimiento: form.prox_mantenimiento.value.trim()
+  };
+
+  if (Object.values(datos).some(v => v === "")) {
+    await Swal.fire("Campos vacíos", "Todos los campos son obligatorios.", "warning");
+    return;
+  }
+
+  const response = await fetch("/agregar_maquina", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(datos)
+  });
+
+  if (response.ok) {
+    const nueva = await response.json();
+    const fila = document.createElement("tr");
+    fila.setAttribute("data-id", nueva.id);
+    fila.innerHTML = `
+      <td>${nueva.nombre}</td>
+      <td>${nueva.fecha_ingreso}</td>
+      <td>${nueva.ult_mantenimiento}</td>
+      <td>${nueva.prox_mantenimiento}</td>
+      <td><button class="btn-eliminar" data-id="${nueva.id}">🗑️</button></td>
+    `;
+    document.querySelector("table tbody").appendChild(fila);
+    form.reset();
+    document.getElementById("formAgregar").style.display = "none";
+
+    // Asignar evento de eliminación
+    fila.querySelector(".btn-eliminar").addEventListener("click", () => eliminarMaquina(nueva.id, fila));
+
+    Swal.fire("Agregado", "Agregado exitosamente.", "success");
+  } else {
+    Swal.fire("Error", "Hubo un error al agregar la máquina.", "error");
+  }
+});
+
+// TOGGLE FORMULARIO
+function toggleAgregarForm() {
+  const form = document.getElementById("formAgregar");
+  form.style.display = (form.style.display === "none" || !form.style.display) ? "block" : "none";
+}
+
+document.getElementById("cancelarAgregar").addEventListener("click", () => {
+  document.getElementById("formAgregar").style.display = "none";
+  document.getElementById("formNuevaMaquina").reset();
+});
+
+// ELIMINAR MÁQUINA CON CONFIRMACIÓN
+function eliminarMaquina(id, fila) {
+  Swal.fire({
+    title: "¿Estás seguro?",
+    text: "No podrás revertir esto.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar"
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      const res = await fetch(`/eliminar_maquina/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        fila.remove();
+        Swal.fire("Eliminada", "La máquina ha sido eliminada correctamente.", "success");
+      } else {
+        Swal.fire("Error", "No se pudo eliminar la máquina.", "error");
+      }
+    }
+  });
+}
+
+// Asignar evento de eliminación inicial
+document.querySelectorAll(".btn-eliminar").forEach(btn => {
+  const id = btn.dataset.id;
+  const fila = btn.closest("tr");
+  btn.addEventListener("click", () => eliminarMaquina(id, fila));
+});
+</script>
+
+{% endblock %}

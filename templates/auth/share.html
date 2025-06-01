@@ -1,0 +1,23 @@
+{% extends './base.html' %}
+
+{% block title %}FitZone - Escoge un módulo{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/modulos.css') }}">
+{% endblock %}
+
+{% block body %}
+
+<!-- Header -->
+			<header id="header">
+				<div class="content">
+					<h1><a >¡Comparte FitZone!</a></h1>
+					
+				</div>
+				<div class="image phone"><div class="inner"><img src="static/img/qr.png"  style="cursor: pointer;" /></div></div>
+			</header>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+{% endblock %}
+

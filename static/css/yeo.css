@@ -105,21 +105,22 @@ background-image: linear-gradient(134deg, #0c5d27 0%, #00ffea 140%);
     letter-spacing: 0.05rem;
 }
 
-
+spline-viewer::part(logo) {
+  display: none !important;
+}
 .slogan-img {
     display: block;
-    max-width: 100%;
-    height: auto;
+    max-width: auto;
+    height: 300px;
     border: none;
-    border-radius: 20px; 
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); 
-    margin-top: 25px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding-right: 50px;
+    margin-top: 5px;
+    transform: scale(1.20); 
+    transition: transform 0.3s ease;
 }
 
 .slogan-img:hover {
-    transform: scale(1.02); 
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+    transform: scale(1.21); 
 }
 
 .yeo-header {
@@ -283,7 +284,6 @@ background-image: linear-gradient(134deg, #0c5d27 0%, #00ffea 140%);
     }
 
     .yeo-do .yeo-do-content {
-       padding-left: 8px;        
         padding-bottom: 1.5rem;
         text-align: center;
         border-bottom: 1px solid #ddd;
